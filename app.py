@@ -13,9 +13,11 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
 from reportlab.lib.units import inch
 from reportlab.lib import colors
+from os import environ
 
 app = Flask(__name__)
-app.config.from_object(Config)
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DATABASE_URL')
+# or directly: postgresql://username:password@host:port/database
 db = SQLAlchemy(app)
 
 login_manager = LoginManager()
