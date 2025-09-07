@@ -1,0 +1,103 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Profile Settings{% endblock %}
+
+{% block page_title %}Profile Settings{% endblock %}
+
+{% block dashboard_content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-user-circle me-2"></i>Update Profile</h5>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    {% if current_user.profile_picture %}
+                    <img src="{{ url_for('static', filename=current_user.profile_picture) }}" 
+                         class="rounded-circle mb-3" width="150" height="150" alt="Profile Picture"
+                         id="profilePreview">
+                    {% else %}
+                    <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" 
+                         style="width: 150px; height: 150px;" id="profilePreview">
+                        <i class="fas fa-user fa-3x text-white"></i>
+                    </div>
+                    {% endif %}
+                    <h5>{{ current_user.full_name }}</h5>
+                    <p class="text-muted">@{{ current_user.username }}</p>
+                </div>
+
+                <form method="POST" action="{{ url_for('update_profile') }}" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="full_name" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="full_name" name="full_name" 
+                                       value="{{ current_user.full_name }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" 
+                                       value="{{ current_user.email }}" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="contact_details" class="form-label">Contact Details</label>
+                        <textarea class="form-control" id="contact_details" name="contact_details" 
+                                  rows="3">{{ current_user.contact_details or '' }}</textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="profile_picture" class="form-label">Change Profile Picture</label>
+                        <input type="file" class="form-control" id="profile_picture" name="profile_picture" 
+                               accept="image/*" onchange="previewImage(this)">
+                        <div class="form-text">Allowed formats: JPG, PNG, GIF. Max 16MB.</div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function previewImage(input) {
+    const preview = document.getElementById('profilePreview');
+    
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            // If currently showing the placeholder, replace it with an img element
+            if (preview.tagName === 'DIV') {
+                const newImg = document.createElement('img');
+                newImg.src = e.target.result;
+                newImg.className = 'rounded-circle mb-3';
+                newImg.width = 150;
+                newImg.height = 150;
+                newImg.alt = 'Profile Picture';
+                newImg.id = 'profilePreview';
+                preview.parentNode.replaceChild(newImg, preview);
+            } else {
+                // If already an img element, just update the source
+                preview.src = e.target.result;
+            }
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// Add live preview for name changes
+document.getElementById('full_name').addEventListener('input', function(e) {
+    document.querySelector('.card-body h5').textContent = e.target.value;
+});
+</script>
+{% endblock %}

@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard{% endblock %}
+{% block page_title %}Student Dashboard{% endblock %}
+
+{% block dashboard_content %}
+<!-- Welcome Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-user-graduate fa-3x"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h2 class="card-title mb-1">Welcome back, {{ current_user.full_name }}!</h2>
+                        <p class="card-text mb-0">Keep up the great work on your assignments!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Groups</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ groups|length }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-users fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Assignments</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ assignments|length }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-tasks fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pending</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ assignments|length - submissions|length }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-clock fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Submitted</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ submissions|length }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-success">
+                    <i class="fas fa-clipboard-list me-2"></i>My Assignments
+                </h6>
+            </div>
+            <div class="card-body">
+                {% if assignments %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th><i class="fas fa-book me-1"></i>Assignment</th>
+                                    <th><i class="fas fa-users me-1"></i>Group</th>
+                                    <th><i class="fas fa-calendar me-1"></i>Due Date</th>
+                                    <th><i class="fas fa-info-circle me-1"></i>Status</th>
+                                    <th><i class="fas fa-cogs me-1"></i>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for assignment in assignments %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ assignment.title }}</strong>
+                                        <br>
+                                        <small class="text-muted">{{ assignment.description|truncate(50) }}</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary">{{ assignment.group.name }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-warning">{{ assignment.due_date.strftime('%b %d, %Y') }}</span>
+                                    </td>
+                                    <td>
+                                        {% if assignment.id in submissions %}
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-check me-1"></i>Submitted
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-warning">
+                                                <i class="fas fa-clock me-1"></i>Pending
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if assignment.id not in submissions %}
+                                            <a href="{{ url_for('submit_assignment', assignment_id=assignment.id) }}" class="btn btn-sm btn-primary">
+                                                <i class="fas fa-upload me-1"></i>Submit
+                                            </a>
+                                        {% else %}
+                                            <a href="{{ url_for('view_submission', submission_id=submissions[assignment.id]) }}" class="btn btn-sm btn-info">
+                                                <i class="fas fa-eye me-1"></i>View
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <div class="mb-4">
+                            <i class="fas fa-clipboard-list fa-4x text-muted"></i>
+                        </div>
+                        <h5 class="text-muted mb-3">No assignments available</h5>
+                        <p class="text-muted mb-4">Join a group to start receiving assignments from your teachers</p>
+                        <a href="{{ url_for('join_group') }}" class="btn btn-success btn-lg">
+                            <i class="fas fa-plus me-2"></i>Join a Group
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-info">
+                    <i class="fas fa-users me-2"></i>My Groups
+                </h6>
+            </div>
+            <div class="card-body">
+                {% if groups %}
+                    {% for group in groups %}
+                        <div class="card border-left-info shadow mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title text-primary fw-bold">{{ group.name }}</h6>
+                                <p class="text-muted small">{{ group.description|truncate(60) }}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">
+                                        <i class="fas fa-users me-1"></i>{{ group.members|length }} members
+                                    </small>
+                                    <a href="{{ url_for('view_group', group_id=group.id) }}" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-eye me-1"></i>View
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-5">
+                        <div class="mb-4">
+                            <i class="fas fa-users fa-4x text-muted"></i>
+                        </div>
+                        <h5 class="text-muted mb-3">No groups joined yet</h5>
+                        <p class="text-muted mb-4">Join a group to connect with your teachers and classmates</p>
+                        <a href="{{ url_for('join_group') }}" class="btn btn-success btn-lg">
+                            <i class="fas fa-plus me-2"></i>Join a Group
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-warning">
+                    <i class="fas fa-chart-line me-2"></i>Recent Activity
+                </h6>
+            </div>
+            <div class="card-body">
+                {% if groups %}
+                    {% for group in groups %}
+                        {% if group.log_entries or group.assignments %}
+                            <div class="mb-3">
+                                <h6 class="fw-bold text-success">{{ group.name }}</h6>
+                                <div class="list-group list-group-flush">
+                                    {% if group.log_entries %}
+                                    <div class="list-group-item d-flex justify-content-between align-items-center py-2">
+                                        <span><i class="fas fa-book text-primary me-2"></i>Log Entries</span>
+                                        <span class="badge bg-primary rounded-pill">{{ group.log_entries|length }}</span>
+                                    </div>
+                                    {% endif %}
+                                    {% if group.assignments %}
+                                    <div class="list-group-item d-flex justify-content-between align-items-center py-2">
+                                        <span><i class="fas fa-tasks text-info me-2"></i>Assignments</span>
+                                        <span class="badge bg-info rounded-pill">{{ group.assignments|length }}</span>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-chart-bar fa-2x text-muted mb-2"></i>
+                        <p class="text-muted">No activity to display</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

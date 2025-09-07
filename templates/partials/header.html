@@ -1,0 +1,62 @@
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary {% if current_user.is_authenticated %}navbar-dashboard{% endif %}">
+        <div class="container-fluid">
+            {% if current_user.is_authenticated %}
+            <button class="navbar-toggler me-2" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            {% endif %}
+            
+            <a class="navbar-brand" href="{{ url_for('dashboard' if current_user.is_authenticated else 'index') }}">
+                <i class="fas fa-book-open me-2"></i>Digital Class Journal
+            </a>
+            
+            {% if not current_user.is_authenticated %}
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            {% endif %}
+            
+            <div class="{% if not current_user.is_authenticated %}collapse navbar-collapse{% endif %}" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    {% if not current_user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+                        </li>
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav">
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                                {% if current_user.profile_picture %}
+                                <img src="{{ url_for('static', filename=current_user.profile_picture) }}" 
+                                     alt="Profile" class="rounded-circle me-1" width="30" height="30">
+                                {% else %}
+                                <div class="bg-secondary rounded-circle d-inline-flex align-items-center justify-content-center me-1" 
+                                     style="width: 30px; height: 30px;">
+                                    <i class="fas fa-user text-white"></i>
+                                </div>
+                                {% endif %}
+                                {{ current_user.full_name }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('update_profile') }}">Profile Settings</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ url_for('logout') }}">Logout</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>

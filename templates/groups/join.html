@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Join Group{% endblock %}
+
+{% block page_title %}Join a Group{% endblock %}
+
+{% block dashboard_content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-sign-in-alt me-2"></i>Join a Group</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('join_group') }}">
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Group Password</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                        <div class="form-text">Ask your teacher for the Group Password.</div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success">Join Group</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>How to Join a Group</h5>
+            </div>
+            <div class="card-body">
+                <ol>
+                    <li>Get the Group Password from your teacher</li>
+                    <li>Enter the Group Password in the form</li>
+                    <li>Click "Join Group" to become a member</li>
+                    <li>Once joined, you can view the group's content and submit work</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

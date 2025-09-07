@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Class Journal - {% block title %}Dashboard{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome@6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% include 'partials/header.html' %}
+    
+    <div class="container-fluid">
+        <div class="row">
+            {% include 'partials/sidebar.html' %}
+            
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+                {% include 'partials/flash.html' %}
+                
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-3 mb-4 border-bottom">
+                    <h1 class="h2">{% block page_title %}Dashboard{% endblock %}</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        {% block page_actions %}{% endblock %}
+                    </div>
+                </div>
+                
+                {% block dashboard_content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,75 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Create Assignment{% endblock %}
+
+{% block page_title %}Create New Assignment{% endblock %}
+
+{% block dashboard_content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Create a New Assignment</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('create_assignment') }}" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="group_id" class="form-label">Select Group</label>
+                        <select class="form-select" id="group_id" name="group_id" required>
+                            <option value="">Choose a group...</option>
+                            {% for group in groups %}
+                            <option value="{{ group.id }}" {% if request.args.get('group_id')|int == group.id %}selected{% endif %}>{{ group.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Assignment Title</label>
+                        <input type="text" class="form-control" id="title" name="title" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+                    </div>
+                    
+                    <!-- ADD FILE UPLOAD FIELD -->
+                    <div class="mb-3">
+                        <label for="question_file" class="form-label">Question File (Optional)</label>
+                        <input type="file" class="form-control" id="question_file" name="question_file" 
+                               accept=".pdf,.doc,.docx,.ppt,.pptx">
+                        <div class="form-text">Upload PDF, DOC, DOCX, PPT, or PPTX files. Max 16MB.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="due_date" class="form-label">Due Date</label>
+                        <input type="datetime-local" class="form-control" id="due_date" name="due_date" required>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Create Assignment</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set minimum datetime to current time
+    const dueDateInput = document.getElementById('due_date');
+    const now = new Date();
+    const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+    dueDateInput.min = localDateTime;
+    
+    // Set default value to tomorrow same time
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowLocal = new Date(tomorrow.getTime() - tomorrow.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+    dueDateInput.value = tomorrowLocal;
+});
+</script>
+{% endblock %}

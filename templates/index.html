@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Digital Class Journal{% endblock %}
+
+{% block content %}
+<div class="hero-section bg-primary text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Digital Class Journal</h1>
+                <p class="lead mb-4">A collaborative learning platform that enables students to document project activities, share media, and receive teacher feedback in a structured, user-friendly environment.</p>
+                {% if not current_user.is_authenticated %}
+                <div class="d-flex gap-3">
+                    <a href="{{ url_for('register') }}" class="btn btn-light btn-lg px-4">Get Started</a>
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg px-4">Login</a>
+                </div>
+                {% else %}
+                <a href="{{ url_for('dashboard') }}" class="btn btn-light btn-lg px-4">Go to Dashboard</a>
+                {% endif %}
+            </div>
+            <div class="col-lg-6 d-none d-lg-block">
+                <img src="{{ url_for('static', filename='images/hero-image.svg') }}" alt="Collaborative Learning" class="img-fluid">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="features-section py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Key Features</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-primary text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center">
+                            <i class="fas fa-users fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Collaborative Groups</h5>
+                        <p class="card-text">Teachers create project groups and students join using group IDs and passwords to collaborate effectively.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-success text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center">
+                            <i class="fas fa-tasks fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Assignment Tracking</h5>
+                        <p class="card-text">Teachers post assignments with due dates, and students submit their work online with file upload support.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon bg-info text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center">
+                            <i class="fas fa-book fa-2x"></i>
+                        </div>
+                        <h5 class="card-title">Learning Logs</h5>
+                        <p class="card-text">Students document their progress with daily or weekly logs containing text and media, with teacher feedback.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="cta-section bg-light py-5">
+    <div class="container text-center">
+        <h2 class="mb-4">Ready to enhance your learning experience?</h2>
+        <p class="lead mb-4">Join Digital Class Journal today and take collaborative learning to the next level.</p>
+        {% if not current_user.is_authenticated %}
+        <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg px-5">Create Account</a>
+        {% else %}
+        <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg px-5">Go to Dashboard</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.hero-section {
+    background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+}
+
+.feature-icon {
+    width: 80px;
+    height: 80px;
+}
+
+.cta-section {
+    background: linear-gradient(135deg, #f8f9fc 0%, #e3e6f0 100%);
+}
+</style>
+{% endblock %}

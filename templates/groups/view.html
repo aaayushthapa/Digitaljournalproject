@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}{{ group.name }}{% endblock %}
+
+{% block page_title %}{{ group.name }}{% endblock %}
+
+{% block page_actions %}
+<div class="btn-group me-2">
+    <a href="{{ url_for('generate_report', group_id=group.id) }}" class="btn btn-sm btn-outline-secondary">
+        <i class="fas fa-download me-1"></i>Generate Report
+    </a>
+    {% if current_user.role == 'teacher' %}
+    <a href="{{ url_for('create_assignment') }}?group_id={{ group.id }}" class="btn btn-sm btn-primary">
+        <i class="fas fa-plus me-1"></i>New Assignment
+    </a>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block dashboard_content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Group Information</h5>
+                <span class="badge bg-light text-dark">{{ group.members|length }} Members</span>
+            </div>
+            <div class="card-body">
+                <h6>Description</h6>
+                <p class="card-text">{{ group.description or "No description provided." }}</p>
+                
+                <h6>Project Question/Topic</h6>
+                <p class="card-text">{{ group.project_question or "No project question provided." }}</p>
+                
+                <div class="d-flex gap-2 mt-4">
+                    <span class="badge bg-secondary">Created: {{ group.created_at.strftime('%Y-%m-%d') }}</span>
+                    <span class="badge bg-info">Teacher: {{ group.teacher.full_name }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-book me-2"></i>Recent Log Entries</h5>
+            </div>
+            <div class="card-body">
+                {% if log_entries %}
+                <div class="list-group list-group-flush">
+                    {% for log in log_entries %}
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ log.title }}</h6>
+                            <small class="text-muted">{{ log.created_at.strftime('%Y-%m-%d') }}</small>
+                        </div>
+                        <p class="mb-1">{{ log.content|truncate(150) }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">By: {{ log.student.full_name }}</small>
+                            <a href="{{ url_for('view_log', log_id=log.id) }}" class="btn btn-sm btn-outline-primary">View Details</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No log entries yet.</p>
+                    {% if current_user.role == 'student' %}
+                    <a href="{{ url_for('create_log') }}?group_id={{ group.id }}" class="btn btn-primary">Create First Log Entry</a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-tasks me-2"></i>Assignments</h5>
+            </div>
+            <div class="card-body">
+                {% if assignments %}
+                <div class="list-group list-group-flush">
+                    {% for assignment in assignments %}
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ assignment.title }}</h6>
+                            <span class="badge bg-{% if assignment.due_date > now %}warning{% else %}secondary{% endif %}">
+                                Due: {{ assignment.due_date.strftime('%Y-%m-%d') }}
+                            </span>
+                        </div>
+                        <p class="mb-1">{{ assignment.description|truncate(50) }}</p>
+                        
+                        <!-- Show file indicator -->
+                        {% if assignment.question_file %}
+                        <small class="text-info">
+                            <i class="fas fa-file me-1"></i>Includes question file
+                        </small>
+                        {% endif %}
+                        
+                        <!-- Show grade if available -->
+                        {% if current_user.role == 'student' and student_submissions and student_submissions.get(assignment.id) %}
+                            {% set submission = student_submissions[assignment.id] %}
+                            {% if submission.grade is not none %}
+                            <small class="text-success d-block mt-1">
+                                <i class="fas fa-star me-1"></i>Grade: {{ submission.grade }}%
+                            </small>
+                            {% endif %}
+                        {% endif %}
+                        
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <small class="text-muted">{{ assignment.submissions|length }} submissions</small>
+                            <a href="{{ url_for('view_assignment', assignment_id=assignment.id) }}" class="btn btn-sm btn-outline-info">View</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-tasks fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">No assignments yet.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0"><i class="fas fa-users me-2"></i>Group Members</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item d-flex align-items-center">
+                        <img src="{{ group.teacher.profile_picture or url_for('static', filename='images/default-profile.png') }}" 
+                             class="rounded-circle me-3" width="40" height="40" alt="{{ group.teacher.full_name }}">
+                        <div>
+                            <h6 class="mb-0">{{ group.teacher.full_name }}</h6>
+                            <small class="text-muted">Teacher</small>
+                        </div>
+                    </div>
+                    
+                    {% for member in group.members %}
+                    <div class="list-group-item d-flex align-items-center">
+                        <img src="{{ member.student.profile_picture or url_for('static', filename='images/default-profile.png') }}" 
+                             class="rounded-circle me-3" width="40" height="40" alt="{{ member.student.full_name }}">
+                        <div>
+                            <h6 class="mb-0">{{ member.student.full_name }}</h6>
+                            <small class="text-muted">Student</small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

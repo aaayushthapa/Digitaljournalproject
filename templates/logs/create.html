@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Create Log Entry{% endblock %}
+
+{% block page_title %}Create Log Entry{% endblock %}
+
+{% block dashboard_content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Create a New Log Entry</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('create_log') }}" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="group_id" class="form-label">Select Group</label>
+                        <select class="form-select" id="group_id" name="group_id" required>
+                            <option value="">Choose a group...</option>
+                            {% for group in groups %}
+                            <option value="{{ group.id }}" {% if request.args.get('group_id')|int == group.id %}selected{% endif %}>{{ group.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="title" name="title" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="content" class="form-label">Content</label>
+                        <textarea class="form-control" id="content" name="content" rows="6" required></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="media" class="form-label">Media Attachment (Optional)</label>
+                        <input type="file" class="form-control" id="media" name="media" accept="image/*,video/*">
+                        <div class="form-text">You can attach images or videos to your log entry. Maximum file size: 16MB.</div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Create Log Entry</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

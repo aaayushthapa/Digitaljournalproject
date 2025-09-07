@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+
+{% block title %}Teacher Dashboard{% endblock %}
+{% block page_title %}Teacher Dashboard{% endblock %}
+
+{% block dashboard_content %}
+<!-- Welcome Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-chalkboard-teacher fa-3x"></i>
+                    </div>
+                    <div class="flex-grow-1 ms-3">
+                        <h2 class="card-title mb-1">Welcome back, {{ current_user.full_name }}!</h2>
+                        <p class="card-text mb-0">Ready to manage your classes and assignments?</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Groups</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ groups|length }}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-users fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Students</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {{ groups|map(attribute='members')|map('length')|sum }}
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-user-graduate fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Assignments</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {{ groups|map(attribute='assignments')|map('length')|sum }}
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-tasks fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Recent Submissions</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {{ groups|map(attribute='assignments')|map('length')|sum }}
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-file-alt fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-users me-2"></i>My Groups
+                </h6>
+            </div>
+            <div class="card-body">
+                {% if groups %}
+                    <div class="row">
+                        {% for group in groups %}
+                            <div class="col-lg-6 mb-4">
+                                <div class="card border-left-primary shadow h-100">
+                                    <div class="card-header bg-primary text-white">
+                                        <h6 class="card-title mb-0">{{ group.name }}</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text text-muted">{{ group.description|truncate(80) }}</p>
+                                        <div class="row text-center">
+                                            <div class="col-6 border-end">
+                                                <div class="h5 mb-0">{{ group.members|length }}</div>
+                                                <div class="small text-muted">Students</div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="h5 mb-0">{{ group.assignments|length }}</div>
+                                                <div class="small text-muted">Assignments</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer bg-light">
+                                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                            <a href="{{ url_for('view_group', group_id=group.id) }}" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-eye me-1"></i>View
+                                            </a>
+                                            <a href="{{ url_for('generate_report', group_id=group.id) }}" class="btn btn-info btn-sm">
+                                                <i class="fas fa-chart-bar me-1"></i>Report
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <div class="mb-4">
+                            <i class="fas fa-users fa-4x text-muted"></i>
+                        </div>
+                        <h5 class="text-muted mb-3">No groups created yet</h5>
+                        <p class="text-muted mb-4">Start by creating your first group to manage students and assignments</p>
+                        <a href="{{ url_for('create_group') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-plus me-2"></i>Create Your First Group
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-info">
+                    <i class="fas fa-chart-line me-2"></i>Recent Activity
+                </h6>
+            </div>
+            <div class="card-body">
+                {% if groups %}
+                    {% for group in groups %}
+                        {% if group.log_entries or group.assignments %}
+                            <div class="mb-3">
+                                <h6 class="fw-bold text-primary">{{ group.name }}</h6>
+                                <div class="list-group list-group-flush">
+                                    {% if group.log_entries %}
+                                    <div class="list-group-item d-flex justify-content-between align-items-center py-2">
+                                        <span><i class="fas fa-book text-primary me-2"></i>Log Entries</span>
+                                        <span class="badge bg-primary rounded-pill">{{ group.log_entries|length }}</span>
+                                    </div>
+                                    {% endif %}
+                                    {% if group.assignments %}
+                                    <div class="list-group-item d-flex justify-content-between align-items-center py-2">
+                                        <span><i class="fas fa-tasks text-info me-2"></i>Assignments</span>
+                                        <span class="badge bg-info rounded-pill">{{ group.assignments|length }}</span>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-chart-bar fa-2x text-muted mb-2"></i>
+                        <p class="text-muted">No activity to display</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-success">
+                    <i class="fas fa-plus-circle me-2"></i>Quick Actions
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('create_group') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Create New Group
+                    </a>
+                    <a href="{{ url_for('create_assignment') }}" class="btn btn-success">
+                        <i class="fas fa-tasks me-2"></i>Create Assignment
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

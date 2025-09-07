@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Create Group{% endblock %}
+
+{% block page_title %}Create New Group{% endblock %}
+
+{% block dashboard_content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Create a New Group</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('create_group') }}">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Group Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="join_password" class="form-label">Join Password</label>
+                        <input type="password" class="form-control" id="join_password" name="join_password" required>
+                        <div class="form-text">Students will need this password to join the group.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="project_question" class="form-label">Project Question/Topic</label>
+                        <textarea class="form-control" id="project_question" name="project_question" rows="4" required></textarea>
+                        <div class="form-text">Provide the main question or topic for this project group.</div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Create Group</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

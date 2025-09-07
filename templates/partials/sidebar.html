@@ -1,0 +1,105 @@
+<nav id="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+    <div class="position-sticky pt-3">
+        <div class="text-center p-3">
+            {% if current_user.profile_picture %}
+            <img src="{{ url_for('static', filename=current_user.profile_picture) }}" 
+                 class="rounded-circle mb-2" width="80" height="80" alt="{{ current_user.full_name }}">
+            {% else %}
+            <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2" 
+                 style="width: 80px; height: 80px;">
+                <i class="fas fa-user fa-2x text-white"></i>
+            </div>
+            {% endif %}
+            <h6 class="text-white">{{ current_user.full_name }}</h6>
+            <span class="badge bg-{% if current_user.role == 'admin' %}danger{% elif current_user.role == 'teacher' %}info{% else %}success{% endif %}">
+                {{ current_user.role|capitalize }}
+            </span>
+        </div>
+        
+        <hr class="border-light my-3">
+        
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}" href="{{ url_for('dashboard') }}">
+                    <i class="fas fa-tachometer-alt me-2"></i>
+                    Dashboard
+                </a>
+            </li>
+            
+            <li class="nav-item">
+                <a class="nav-link {% if request.endpoint == 'update_profile' %}active{% endif %}" href="{{ url_for('update_profile') }}">
+                    <i class="fas fa-user-edit me-2"></i>
+                    Profile Settings
+                </a>
+            </li>
+            
+            {% if current_user.role == 'teacher' %}
+            <li class="nav-item">
+                <a class="nav-link {% if request.endpoint == 'create_group' %}active{% endif %}" href="{{ url_for('create_group') }}">
+                    <i class="fas fa-plus-circle me-2"></i>
+                    Create Group
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.endpoint == 'create_assignment' %}active{% endif %}" href="{{ url_for('create_assignment') }}">
+                    <i class="fas fa-tasks me-2"></i>
+                    Create Assignment
+                </a>
+            </li>
+            {% elif current_user.role == 'student' %}
+            <li class="nav-item">
+                <a class="nav-link {% if request.endpoint == 'join_group' %}active{% endif %}" href="{{ url_for('join_group') }}">
+                    <i class="fas fa-sign-in-alt me-2"></i>
+                    Join Group
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.endpoint == 'create_log' %}active{% endif %}" href="{{ url_for('create_log') }}">
+                    <i class="fas fa-pencil-alt me-2"></i>
+                    Create Log
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+        
+        {% if current_user.role == 'admin' %}
+        <h6 class="sidebar-heading mt-4 px-3 mb-1 text-muted">Administration</h6>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fas fa-user-cog me-2"></i>
+                    User Management
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fas fa-database me-2"></i>
+                    Database
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fas fa-cog me-2"></i>
+                    System Settings
+                </a>
+            </li>
+        </ul>
+        {% endif %}
+        
+        <h6 class="sidebar-heading mt-4 px-3 mb-1 text-muted">Resources</h6>
+        <ul class="nav flex-column mb-2">
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fas fa-question-circle me-2"></i>
+                    Help Center
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="fas fa-book me-2"></i>
+                    Documentation
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>

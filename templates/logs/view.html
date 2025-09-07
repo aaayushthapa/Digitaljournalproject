@@ -1,0 +1,166 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}{{ log_entry.title }}{% endblock %}
+
+{% block page_title %}{{ log_entry.title }}{% endblock %}
+
+{% block dashboard_content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-book me-2"></i>Log Entry</h5>
+                <span class="badge bg-light text-dark">{{ log_entry.created_at.strftime('%Y-%m-%d') }}</span>
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-4">
+                    <img src="{{ log_entry.student.profile_picture or url_for('static', filename='images/default-profile.png') }}" 
+                         class="rounded-circle me-3" width="50" height="50" alt="{{ log_entry.student.full_name }}">
+                    <div>
+                        <h6 class="mb-0">{{ log_entry.student.full_name }}</h6>
+                        <small class="text-muted">Student in {{ log_entry.group.name }}</small>
+                    </div>
+                </div>
+                
+                <div class="log-content mb-4">
+                    {{ log_entry.content|linebreaks }}
+                </div>
+                
+                {% if log_entry.media_url %}
+                <div class="media-attachment mb-4">
+                    <h6>Media Attachment</h6>
+                    {% if log_entry.media_url.endswith(('.jpg', '.jpeg', '.png', '.gif')) %}
+                    <img src="{{ url_for('static', filename=log_entry.media_url) }}" class="img-fluid rounded" alt="Log media">
+                    {% elif log_entry.media_url.endswith(('.mp4', '.mov', '.avi')) %}
+                    <video controls class="w-100 rounded">
+                        <source src="{{ url_for('static', filename=log_entry.media_url) }}">
+                        Your browser does not support the video tag.
+                    </video>
+                    {% else %}
+                    <a href="{{ url_for('static', filename=log_entry.media_url) }}" class="btn btn-outline-primary">
+                        <i class="fas fa-download me-2"></i>Download Attachment
+                    </a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% if current_user.role == 'teacher' %}
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-comments me-2"></i>Teacher Feedback</h5>
+            </div>
+            <div class="card-body">
+                {% if log_entry.feedbacks %}
+                <div class="feedback-list">
+                    {% for feedback in log_entry.feedbacks %}
+                    <div class="feedback-item mb-3 p-3 bg-light rounded">
+                        <div class="d-flex align-items-center mb-2">
+                            <img src="{{ feedback.teacher.profile_picture or url_for('static', filename='images/default-profile.png') }}" 
+                                 class="rounded-circle me-2" width="30" height="30" alt="{{ feedback.teacher.full_name }}">
+                            <strong>{{ feedback.teacher.full_name }}</strong>
+                            <small class="text-muted ms-2">{{ feedback.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                        </div>
+                        <p class="mb-0">{{ feedback.feedback }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted">No feedback yet.</p>
+                {% endif %}
+                
+                <form id="feedbackForm" class="mt-3">
+                    <div class="mb-2">
+                        <label for="feedback" class="form-label">Add Feedback</label>
+                        <textarea class="form-control" id="feedback" name="feedback" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm">Submit Feedback</button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Log Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <h6>Group</h6>
+                    <p class="card-text">{{ log_entry.group.name }}</p>
+                </div>
+                
+                <div class="mb-3">
+                    <h6>Created</h6>
+                    <p class="card-text">{{ log_entry.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                </div>
+                
+                <div class="mb-3">
+                    <h6>Author</h6>
+                    <div class="d-flex align-items-center">
+                        <img src="{{ log_entry.student.profile_picture or url_for('static', filename='images/default-profile.png') }}" 
+                             class="rounded-circle me-2" width="30" height="30" alt="{{ log_entry.student.full_name }}">
+                        <span>{{ log_entry.student.full_name }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-link me-2"></i>Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('view_group', group_id=log_entry.group.id) }}" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Group
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% if current_user.role == 'teacher' %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const feedbackForm = document.getElementById('feedbackForm');
+    
+    feedbackForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const data = {
+            feedback: formData.get('feedback')
+        };
+        
+        fetch("{{ url_for('add_feedback', log_id=log_entry.id) }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert('Error: ' + data.error);
+            } else {
+                // Reload the page to show the new feedback
+                location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        });
+    });
+});
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Submit Assignment{% endblock %}
+
+{% block page_title %}Submit Assignment: {{ assignment.title }}{% endblock %}
+
+{% block dashboard_content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-upload me-2"></i>Submit Assignment</h5>
+            </div>
+            <div class="card-body">
+                {% if existing_submission %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>You have already submitted this assignment on {{ existing_submission.submitted_at.strftime('%Y-%m-%d at %H:%M') }}.
+                    <a href="{{ url_for('static', filename=existing_submission.file_path) }}" class="alert-link">View your submission</a>
+                </div>
+                {% else %}
+                <div class="alert alert-primary">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Due Date:</strong> {{ assignment.due_date.strftime('%Y-%m-%d at %H:%M') }}
+                    {% if assignment.due_date < now %}  <!-- THIS IS WHERE now IS USED -->
+                    <span class="badge bg-danger ms-2">Overdue</span>
+                    {% endif %}
+                </div>
+                
+                <form method="POST" action="{{ url_for('submit_assignment', assignment_id=assignment.id) }}" enctype="multipart/form-data">
+                    <div class="mb-4">
+                        <label for="file" class="form-label">Upload your work</label>
+                        <input type="file" class="form-control" id="file" name="file" required accept=".pdf,.doc,.docx,.pptx">
+                        <div class="form-text">Allowed formats: PDF, DOC, DOCX, PPTX. Maximum file size: 16MB.</div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success">Submit Assignment</button>
+                    </div>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Assignment Details</h5>
+            </div>
+            <div class="card-body">
+                <h6>{{ assignment.title }}</h6>
+                <p class="card-text">{{ assignment.description }}</p>
+                
+                <div class="d-flex gap-2">
+                    <span class="badge bg-secondary">Group: {{ assignment.group.name }}</span>
+                    <span class="badge bg-{% if assignment.due_date > now %}warning{% else %}danger{% endif %}">  <!-- THIS IS WHERE now IS USED -->
+                        Due: {{ assignment.due_date.strftime('%Y-%m-%d %H:%M') }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

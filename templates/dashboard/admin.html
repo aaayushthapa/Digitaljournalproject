@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block page_title %}Admin Dashboard{% endblock %}
+
+{% block dashboard_content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>System Overview</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-primary shadow-sm h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                            Total Users</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">1,234</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-users fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-success shadow-sm h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                            Active Groups</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">56</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-project-diagram fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-info shadow-sm h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                            Assignments</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">124</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-tasks fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-warning shadow-sm h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                            Log Entries</div>
+                                        <div class="h5 mb-0 font-weight-bold text-gray-800">789</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-cogs me-2"></i>Administration Tools</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-user-cog fa-3x text-primary mb-3"></i>
+                                <h5 class="card-title">User Management</h5>
+                                <p class="card-text">Manage all users, roles, and permissions in the system.</p>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <a href="#" class="btn btn-primary w-100">Manage Users</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-database fa-3x text-success mb-3"></i>
+                                <h5 class="card-title">Database Management</h5>
+                                <p class="card-text">Backup, restore, and maintain the application database.</p>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <a href="#" class="btn btn-success w-100">Database Tools</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-chart-line fa-3x text-info mb-3"></i>
+                                <h5 class="card-title">Analytics & Reports</h5>
+                                <p class="card-text">View system analytics and generate detailed reports.</p>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <a href="#" class="btn btn-info w-100">View Analytics</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-sliders-h fa-3x text-warning mb-3"></i>
+                                <h5 class="card-title">System Settings</h5>
+                                <p class="card-text">Configure application settings and preferences.</p>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <a href="#" class="btn btn-warning w-100">System Settings</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0"><i class="fas fa-history me-2"></i>Recent Activity</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="fas fa-user-plus text-success"></i>
+                        </div>
+                        <div>
+                            <div class="small text-muted">10 minutes ago</div>
+                            <p class="mb-0">New user registered: John Doe</p>
+                        </div>
+                    </div>
+                    <div class="list-group-item d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="fas fa-tasks text-info"></i>
+                        </div>
+                        <div>
+                            <div class="small text-muted">30 minutes ago</div>
+                            <p class="mb-0">Assignment submitted in Group A</p>
+                        </div>
+                    </div>
+                    <div class="list-group-item d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="fas fa-book text-primary"></i>
+                        </div>
+                        <div>
+                            <div class="small text-muted">1 hour ago</div>
+                            <p class="mb-0">New log entry created by Jane Smith</p>
+                        </div>
+                    </div>
+                    <div class="list-group-item d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="fas fa-comment text-warning"></i>
+                        </div>
+                        <div>
+                            <div class="small text-muted">2 hours ago</div>
+                            <p class="mb-0">Teacher provided feedback on a log entry</p>
+                        </div>
+                    </div>
+                    <div class="list-group-item d-flex align-items-center">
+                        <div class="me-3">
+                            <i class="fas fa-project-diagram text-danger"></i>
+                        </div>
+                        <div>
+                            <div class="small text-muted">3 hours ago</div>
+                            <p class="mb-0">New group created by Dr. Johnson</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
