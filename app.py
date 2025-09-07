@@ -16,8 +16,20 @@ from reportlab.lib import colors
 from os import environ
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DATABASE_URL')
-# or directly: postgresql://username:password@host:port/database
+app.config['SECRET_KEY'] = environ.get('SECRET_KEY', 'bff53de6dfc3ba18e18ce7d7796d9e90c5efa95c3a31ea4d')
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+# Database configuration
+database_url = environ.get('DATABASE_URL')
+if database_url:
+    if database_url.startswith('postgres://'):
+        database_url = database_url.replace('postgres://', 'postgresql://', 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+else:
+    # Fallback to SQLite for local development
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 login_manager = LoginManager()
@@ -137,8 +149,8 @@ def save_file(file, subfolder):
         
         file_path = os.path.join(upload_dir, unique_filename)
         file.save(file_path)
-        print(f"File saved to: {file_path}")  # Debug
         
+        # Return relative path for web access
         return f"uploads/{subfolder}/{unique_filename}"
     return None
 
@@ -866,7 +878,10 @@ with app.app_context():
     for directory in upload_dirs:
         dir_path = os.path.join(app.config['UPLOAD_FOLDER'], directory)
         os.makedirs(dir_path, exist_ok=True)
-        print(f"Created directory: {dir_path}")
+    
+    # Create database tables
+    db.create_all()
+    print("Database tables created successfully")
 
 if __name__ == '__main__':
     with app.app_context():
