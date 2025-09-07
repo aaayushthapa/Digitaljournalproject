@@ -7,4 +7,5 @@ Flask-Login==0.6.2
 reportlab
 gunicorn==23.0.0
 Flask
+mysql-connector-python
 email-validator==2.0.0
